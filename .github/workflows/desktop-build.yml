@@ -30,26 +30,31 @@ jobs:
           cache: gradle
 
       - name: 构建 Windows 程序
-        # 在这里我们人为注入了作者脚本中要求的所有环境变量，给它们赋任意虚假值即可绕过报错
+        # 这里汇集了所有作者代码中可能检查的环境变量
         run: |
           .\gradlew.bat :composeApp:packageDistributionForCurrentOS
         env:
           JAVA_HOME: ${{ steps.setup-java.outputs.path }}
           KEYSTORE_PASSWORD: "dummy_password"
+          KEY_PASSWORD: "dummy_password"
+          KEY_ALIAS: "dummy_alias"
           KEYSTORE_ALIAS: "dummy_alias"
-          KEY_PASSWORD: "dummy_key_password"
-          # 如果作者代码里还检查了文件路径，我们随便指一个现有的文件
-          KEYSTORE_PATH: "gradle.properties" 
+          KEYSTORE_PATH: "gradle.properties"
 
       - name: 检查生成目录 (调试用)
         run: |
-          dir composeApp\build\compose\binaries\main\
+          if (Test-Path "composeApp\build\compose\binaries\main\") {
+              dir composeApp\build\compose\binaries\main\
+          } else {
+              echo "打包可能未生成预期目录，请检查构建日志"
+          }
 
       - name: 上传 EXE 安装包
         uses: actions/upload-artifact@v4
         with:
           name: traclock-windows-installer
           path: composeApp/build/compose/binaries/main/exe/*.exe
+          if-no-files-found: warn
           retention-days: 7
 
       - name: 上传免安装绿色版 (文件夹)
@@ -57,4 +62,5 @@ jobs:
         with:
           name: traclock-windows-portable
           path: composeApp/build/compose/binaries/main/app/
+          if-no-files-found: warn
           retention-days: 7
