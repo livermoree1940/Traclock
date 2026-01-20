@@ -111,9 +111,10 @@ android {
     signingConfigs {
         create("release") {
             storeFile = file("../traclock.jks")
-            storePassword = env.fetch("KEYSTORE_PASSWORD")
-            keyPassword = env.fetch("KEY_PASSWORD")
-            keyAlias = env.fetch("KEY_ALIAS")
+            // 在 CI 环境中使用虚拟值代替环境变量
+            storePassword = "dummy_password"
+            keyPassword = "dummy_password"
+            keyAlias = "dummy_alias"
         }
         create("debug-mean") {
             storeFile = file("../debug-mean.jks")
