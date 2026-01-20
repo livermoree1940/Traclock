@@ -168,14 +168,28 @@ compose.desktop {
     application {
         mainClass = "com.mean.traclock.MainKt"
 
-        jvmArgs += listOf("-Dfile.encoding=GBK")
+        jvmArgs += listOf(
+            "-Dfile.encoding=GBK",
+            "-Dkotlinx.coroutines.debug=off",
+            "-Xmx512m"
+        )
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "Traclock"
             packageVersion = "1.0.0"
-            // FIXME Exception in thread "main" java.lang.NoClassDefFoundError: sun/misc/Unsafe
-            modules("jdk.unsupported")
+            // 添加必要的 Java 模块以确保 Compose 运行时正常工作
+            modules(
+                "jdk.unsupported",
+                "java.base",
+                "java.desktop",
+                "java.logging",
+                "java.net.http",
+                "java.sql",
+                "java.xml",
+                "jdk.crypto.ec",
+                "jdk.localedata"
+            )
 
             windows {
                 iconFile.set(project.file("src/commonMain/composeResources/drawable/logo.ico"))
