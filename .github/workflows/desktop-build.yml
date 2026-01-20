@@ -39,7 +39,7 @@ jobs:
         with:
           name: Traclock-Windows-Installer
           # 根据你的日志，文件就在这个 msi 文件夹里
-          path: composeApp/build/compose/binaries/main/msi/*.msi
+          path: composeApp/build/compose/binaries/main/exe/*.exe
           retention-days: 7
 
       - name: 上传免安装版 (如果存在)

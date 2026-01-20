@@ -175,7 +175,7 @@ compose.desktop {
         )
 
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            targetFormats(TargetFormat.Exe)
             packageName = "Traclock"
             packageVersion = "1.0.0"
             // 添加必要的 Java 模块以确保 Compose 运行时正常工作
