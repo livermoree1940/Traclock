@@ -34,10 +34,10 @@ jobs:
           KEY_PASSWORD: "dummy_password"
           KEYSTORE_PATH: "gradle.properties"
 
-      - name: 上传 Windows 安装包 (MSI)
+      - name: 上传 Windows 安装包 (EXE)
         uses: actions/upload-artifact@v4
         with:
-          name: Traclock-Windows-Installer
+          name: Traclock-Windows-EXE-Installer
           # 根据你的日志，文件就在这个 msi 文件夹里
           path: composeApp/build/compose/binaries/main/exe/*.exe
           retention-days: 7
