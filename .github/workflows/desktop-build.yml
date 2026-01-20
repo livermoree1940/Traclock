@@ -2,15 +2,10 @@ name: Desktop 构建
 
 on:
   workflow_dispatch:
-    inputs:
-      reason:
-        description: '手动触发构建的原因'
-        required: false
-        default: '手动测试构建'
 
 permissions:
   contents: read
-  actions: read
+  actions: write
 
 jobs:
   build-windows:
@@ -30,37 +25,27 @@ jobs:
           cache: gradle
 
       - name: 构建 Windows 程序
-        # 这里汇集了所有作者代码中可能检查的环境变量
         run: |
           .\gradlew.bat :composeApp:packageDistributionForCurrentOS
         env:
           JAVA_HOME: ${{ steps.setup-java.outputs.path }}
           KEYSTORE_PASSWORD: "dummy_password"
-          KEY_PASSWORD: "dummy_password"
-          KEY_ALIAS: "dummy_alias"
           KEYSTORE_ALIAS: "dummy_alias"
+          KEY_PASSWORD: "dummy_password"
           KEYSTORE_PATH: "gradle.properties"
 
-      - name: 检查生成目录 (调试用)
-        run: |
-          if (Test-Path "composeApp\build\compose\binaries\main\") {
-              dir composeApp\build\compose\binaries\main\
-          } else {
-              echo "打包可能未生成预期目录，请检查构建日志"
-          }
-
-      - name: 上传 EXE 安装包
+      - name: 上传 Windows 安装包 (MSI)
         uses: actions/upload-artifact@v4
         with:
-          name: traclock-windows-installer
-          path: composeApp/build/compose/binaries/main/exe/*.exe
-          if-no-files-found: warn
+          name: Traclock-Windows-Installer
+          # 根据你的日志，文件就在这个 msi 文件夹里
+          path: composeApp/build/compose/binaries/main/msi/*.msi
           retention-days: 7
 
-      - name: 上传免安装绿色版 (文件夹)
+      - name: 上传免安装版 (如果存在)
         uses: actions/upload-artifact@v4
         with:
-          name: traclock-windows-portable
+          name: Traclock-Windows-Portable
           path: composeApp/build/compose/binaries/main/app/
-          if-no-files-found: warn
+          if-no-files-found: ignore
           retention-days: 7
